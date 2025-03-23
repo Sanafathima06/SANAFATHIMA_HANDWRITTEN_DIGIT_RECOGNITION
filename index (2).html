@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Handwritten Digit Recognition</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        body {
+            text-align: center;
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(to right, #141e30, #243b55);
+            color: white;
+            margin: 0;
+            padding: 20px;
+        }
+        h1 {
+            font-weight: 600;
+        }
+        canvas {
+            border: 3px solid white;
+            background-color: black;
+            cursor: crosshair;
+            margin-top: 10px;
+            touch-action: none;
+            border-radius: 10px;
+        }
+        .buttons {
+            margin-top: 15px;
+        }
+        button {
+            padding: 12px 20px;
+            font-size: 16px;
+            margin: 5px;
+            cursor: pointer;
+            border: none;
+            background-color: #4CAF50;
+            color: white;
+            border-radius: 5px;
+            font-weight: 600;
+            transition: background 0.3s;
+        }
+        button:hover {
+            background-color: #3e8e41;
+        }
+        #result {
+            font-size: 22px;
+            margin-top: 15px;
+            font-weight: bold;
+            color: #FFD700;
+        }
+        .fractal-paragraph {
+            margin-top: 20px;
+            font-size: 18px;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 15px;
+            border-radius: 8px;
+            line-height: 1.6;
+        }
+    </style>
+</head>
+<body>
+    <h1>Handwritten Digit Recognition</h1>
+    <canvas id="canvas" width="280" height="280"></canvas>
+    <div class="buttons">
+        <button onclick="clearCanvas()">Clear</button>
+        <button onclick="predict()">Predict</button>
+    </div>
+    <p id="result">Draw a digit and click Predict</p>
+
+    <div class="fractal-paragraph">
+        <p>Numbers are the essence of the universe, guiding us through the fractal nature of existence. 
+        From the spirals of galaxies to the symmetry of snowflakes, digits shape our understanding of patterns, time, and infinity. 
+        Every number has a rhythm, a story, and a place in the cosmic order. 
+        The Fibonacci sequence, golden ratio, and fractal geometry reveal the interconnectedness of all things, 
+        showing that even the simplest digits hold the key to the mysteries of reality.</p>
+    </div>
+
+    <script>
+        let canvas = document.getElementById("canvas");
+        let ctx = canvas.getContext("2d");
+        ctx.fillStyle = "black";
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+        let isDrawing = false;
+        let lastX = 0, lastY = 0;
+
+        function startDrawing(event) {
+            isDrawing = true;
+            [lastX, lastY] = [event.offsetX, event.offsetY];
+        }
+
+        function stopDrawing() {
+            isDrawing = false;
+            ctx.beginPath();
+        }
+
+        function draw(event) {
+            if (!isDrawing) return;
+            ctx.strokeStyle = "white";
+            ctx.lineWidth = 18;
+            ctx.lineCap = "round";
+            ctx.lineJoin = "round";
+
+            ctx.beginPath();
+            ctx.moveTo(lastX, lastY);
+            ctx.lineTo(event.offsetX, event.offsetY);
+            ctx.stroke();
+
+            [lastX, lastY] = [event.offsetX, event.offsetY];
+        }
+
+        function clearCanvas() {
+            ctx.fillStyle = "black";
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            document.getElementById("result").innerText = "Draw a digit and click Predict";
+        }
+
+        async function predict() {
+            let model = await tf.loadLayersModel("model/model.json");
+            let imgData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+            
+            let imgTensor = tf.browser.fromPixels(imgData, 1)
+                .resizeNearestNeighbor([28, 28])
+                .mean(2)
+                .expandDims(0)
+                .expandDims(-1)
+                .toFloat()
+                .div(tf.scalar(255.0));
+
+            let prediction = model.predict(imgTensor);
+            let result = prediction.argMax(1).dataSync()[0];
+
+            document.getElementById("result").innerText = "Predicted Digit: " + result;
+        }
+
+        canvas.addEventListener("mousedown", startDrawing);
+        canvas.addEventListener("mouseup", stopDrawing);
+        canvas.addEventListener("mousemove", draw);
+        canvas.addEventListener("touchstart", (e) => startDrawing(e.touches[0]));
+        canvas.addEventListener("touchmove", (e) => draw(e.touches[0]));
+        canvas.addEventListener("touchend", stopDrawing);
+    </script>
+</body>
+</html>

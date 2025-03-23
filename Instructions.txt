@@ -1,0 +1,99 @@
+# Handwritten Digit Recognition Web App - Instructions
+
+## Project Overview
+This project is a web-based application that recognizes handwritten digits (0-9) using a Convolutional Neural Network (CNN) trained on the MNIST dataset. The trained model is converted to TensorFlow.js so it can run directly in a web browser.
+
+## Project Structure
+```
+handwritten-digit-recognition/
+│── model/
+│   ├── train_model.py          # Trains the CNN model
+│   ├── convert_model.py        # Converts the trained model to TensorFlow.js format
+│   ├── mnist_cnn.h5            # Trained model file
+│   ├── model.json              # TensorFlow.js model
+│   ├── model.weights.bin       # Model weights
+│
+│── webapp/
+│   ├── index.html              # Web app (HTML, CSS, JavaScript)
+│   ├── model/                  # Stores converted TensorFlow.js model files
+│
+│── README.md                   # Documentation
+│── requirements.txt             # Dependencies
+│── .gitignore                   # Ignore unnecessary files
+```
+
+## Installation & Setup
+
+### 1. Download the Required Files
+Download the following files from the GitHub repository:
+
+- [train_model.py](train_model.py) - Script to train the CNN model.
+- [convert_model.py](convert_model.py) - Converts the trained model to TensorFlow.js format.
+- [index.html](index.html) - The complete web app interface.
+
+Ensure these files are placed in the correct project directories as mentioned above.
+
+### 2. Install Dependencies
+Before running the scripts, install the required Python packages:
+```sh
+pip install tensorflow tensorflowjs
+```
+
+### 3. Train the CNN Model
+Run the `train_model.py` script to train a CNN on the MNIST dataset:
+```sh
+python model/train_model.py
+```
+- This will generate a trained model and save it as `mnist_cnn.h5` inside the `model/` folder.
+
+### 4. Convert the CNN Model to TensorFlow.js Format
+Convert the trained model into a format compatible with TensorFlow.js:
+```sh
+python model/convert_model.py
+```
+- This will create the `model.json` and `model.weights.bin` files inside the `webapp/model/` directory.
+
+### 5. Complete the Web Interface
+1. Open the `webapp/index.html` file in a web browser.
+2. Draw a digit (0-9) on the canvas.
+3. Click the **"Predict"** button to see the model’s prediction.
+4. Click **"Clear"** to reset the canvas and try again.
+
+## Deployment on GitHub Pages
+
+### 1. Initialize Git Repository:
+```sh
+git init
+git add .
+git commit -m "Initial commit"
+```
+
+### 2. Create a GitHub Repository:
+- Go to [GitHub](https://github.com/)
+- Click **New Repository**
+- Name it `handwritten-digit-recognition`
+- Copy the repository link
+
+### 3. Push Code to GitHub:
+```sh
+git remote add origin https://github.com/yourusername/handwritten-digit-recognition.git
+git branch -M main
+git push -u origin main
+```
+
+### 4. Enable GitHub Pages:
+- Go to repository **Settings**
+- Under **Pages**, select the `main` branch and save
+- Your app will be live at:  
+  `https://yourusername.github.io/handwritten-digit-recognition/`
+
+## Future Enhancements
+- Support for **multi-digit recognition**
+- **Offline functionality** (PWA support)
+- **Voice-based digit recognition**
+- **Mobile app development**
+
+## Conclusion
+This project provides a **fast, browser-based solution** for handwritten digit recognition. By following the above steps, you can **train, convert, and deploy** your model with ease.
+
+For any issues, feel free to modify and experiment with the code!
